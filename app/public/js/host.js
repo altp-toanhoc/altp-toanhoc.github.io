@@ -12,7 +12,7 @@ import {
 import { sfx, toggle as toggleSound, isOn as soundOn, useSoundFiles, countdown, setUrgent } from './sound.js';
 // The one question set of the game (official, verbatim from the author's document); bundled into the page.
 import QUESTIONS from '../../bo_cau/cap_so_cong.json';
-import { applyTheme, describeTheme } from './theme.js';
+import { applyTheme } from './theme.js';
 
 const { auth, db } = connect('host', browserSessionPersistence);
 const now = serverClock(db);
@@ -512,10 +512,9 @@ setInterval(renderClock, 100);
 (async () => {
   const theme = await applyTheme();
   useSoundFiles(theme.sounds);
-  // Only shown when someone has set up a theme (or made a mistake in it).
-  const info = Object.keys(theme.images).length || Object.keys(theme.sounds).length || theme.errors.length;
-  $('#themeInfo').textContent = info ? [describeTheme(theme), ...theme.errors].join(' ') : '';
-  show($('#themeInfo'), !!info);
+  // Only shown when theme.json has a mistake in it.
+  $('#themeInfo').textContent = theme.errors.join(' ');
+  show($('#themeInfo'), theme.errors.length > 0);
   render();
   await signIn(auth); // kept for this tab (session persistence), so a reload keeps the room
   const saved = sessionStorage.getItem(ROOM_KEY);

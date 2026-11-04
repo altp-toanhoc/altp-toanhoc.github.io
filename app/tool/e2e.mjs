@@ -62,7 +62,7 @@ try {
   await host.until(`document.querySelector('#qr').src.startsWith('data:image/png')`, 'QR code');
   if (!THEMED) assert.match(await host.text('.lobby-badge'), /AI LÀ TRIỆU PHÚ\s*TOÁN HỌC/, 'built-in logo in the lobby');
   if (THEMED) {
-    assert.match(await host.text('#themeInfo'), /^Giao diện riêng: 11 ảnh, 9 âm thanh, 2 màu\./, 'theme loaded with every slot');
+    assert.equal(await host.eval(`document.querySelector('#themeInfo').hidden`), true, 'a valid theme shows no info line');
     await host.until(`[...document.querySelectorAll('.brand.site .logo, img.theme-logo')].filter((i) => i.naturalWidth > 0 && !i.closest('[hidden]') && !i.hidden).length === 2`, 'logo in the top bar and the lobby');
     assert.equal(await host.eval(`getComputedStyle(document.querySelector('.brand.site .badge-wrap')).display`), 'none', 'theme logo replaces the built-in badge');
   }
