@@ -5,15 +5,21 @@ import {
 
 // On the real site this becomes the Firebase web config of the project (it is public by design;
 // access is controlled by database.rules.json, not by hiding this object).
-export const FIREBASE_CONFIG = {
+// Test build: the page and the emulators share one origin through tool/serve.mjs.
+export const IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+
+// Localhost keeps the offline demo project of the emulators; the real site uses project altp-toanhoc.
+export const FIREBASE_CONFIG = IS_LOCAL ? {
   apiKey: 'demo-key',
   authDomain: 'demo-trangrua.firebaseapp.com',
   projectId: 'demo-trangrua',
   databaseURL: 'https://demo-trangrua-default-rtdb.firebaseio.com',
+} : {
+  apiKey: 'AIzaSyBlRUqbjEKzP6Q1uDqNDNfLpP50Nt8NE04',
+  authDomain: 'altp-toanhoc.firebaseapp.com',
+  projectId: 'altp-toanhoc',
+  databaseURL: 'https://altp-toanhoc-default-rtdb.asia-southeast1.firebasedatabase.app',
 };
-
-// Test build: the page and the emulators share one origin through tool/serve.mjs.
-export const IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
 
 let appCount = 0;
 export function connect(name, persistence) {
