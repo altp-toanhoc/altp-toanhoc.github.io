@@ -1,0 +1,23 @@
+{
+  "name": "ai-la-trieu-phu-toan-hoc",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "bash tool/build.sh",
+    "start": "bash tool/start.sh",
+    "stop": "bash tool/stop.sh",
+    "test": "node --test test/*.test.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.28.2",
+    "firebase": "^13.2.0",
+    "firebase-tools": "^15.34.2",
+    "katex": "^0.19.1",
+    "qrcode": "^1.5.4"
+  },
+  "private": true,
+  "type": "module"
+}

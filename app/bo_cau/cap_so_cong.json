@@ -1,0 +1,72 @@
+{
+ "title": "Ai Là Triệu Phú Toán Học",
+ "topic": "Ôn tập cấp số cộng",
+ "questions": [
+  {
+   "seconds": 20,
+   "text": "Dãy số nào dưới đây là một cấp số cộng?",
+   "options": [
+    "\\(1;\\ 2;\\ 4;\\ 8;\\ 16\\)",
+    "\\(1;\\ 4;\\ 9;\\ 16;\\ 25\\)",
+    "\\(8;\\ 5;\\ 2;\\ -1;\\ -4\\)",
+    "\\(2;\\ 3;\\ 5;\\ 8;\\ 13\\)"
+   ],
+   "answer": 2,
+   "explain": "Hiệu của hai số hạng liên tiếp luôn bằng \\(-3\\), nên dãy ở phương án C là một cấp số cộng."
+  },
+  {
+   "seconds": 20,
+   "text": "Cho cấp số cộng \\((u_n)\\) thỏa mãn\n\n\\[\nu_n-u_{n+1}=5,\\quad \\forall n\\ge 1.\n\\]\n\nCông sai của cấp số cộng này bằng bao nhiêu?",
+   "options": [
+    "\\(5\\)",
+    "\\(-5\\)",
+    "\\(\\dfrac{1}{5}\\)",
+    "Không xác định được"
+   ],
+   "answer": 1,
+   "explain": "Công sai là \\(d=u_{n+1}-u_n\\). Vì \\(u_n-u_{n+1}=5\\) nên \\(d=-5\\)."
+  },
+  {
+   "seconds": 20,
+   "text": "Dãy số \\(10;\\ 7;\\ 4;\\ 1;\\ -2;\\ldots\\) được xác định bởi hệ thức truy hồi nào dưới đây?",
+   "options": [
+    "\\(u_1=10;\\quad u_{n+1}=u_n+3\\)",
+    "\\(u_1=7;\\quad u_{n+1}=u_n-3\\)",
+    "\\(u_1=10;\\quad u_{n+1}=3u_n\\)",
+    "\\(u_1=10;\\quad u_{n+1}=u_n-3\\)"
+   ],
+   "answer": 3,
+   "explain": "Dãy bắt đầu bằng \\(u_1=10\\); mỗi số hạng sau ít hơn số hạng trước \\(3\\) đơn vị nên \\(u_{n+1}=u_n-3\\).",
+   "note": "Các hệ thức truy hồi được xét với \\(n\\ge 1\\)."
+  },
+  {
+   "seconds": 20,
+   "text": "Cho cấp số cộng có số hạng đầu \\(u_1=5\\) và công sai \\(d=-2\\). Công thức số hạng tổng quát của cấp số cộng là:",
+   "options": [
+    "\\(u_n=5-2(n-1)\\)",
+    "\\(u_n=5-2n\\)",
+    "\\(u_n=5\\cdot(-2)^{n-1}\\)",
+    "\\(u_n=5+2(n-1)\\)"
+   ],
+   "answer": 0,
+   "explain": "Áp dụng \\(u_n=u_1+(n-1)d\\), ta được \\(u_n=5-2(n-1)\\)."
+  },
+  {
+   "seconds": 20,
+   "text": "Cho ba số hạng liên tiếp \\(u_4,u_5,u_6\\) của một cấp số cộng. Đẳng thức nào dưới đây luôn đúng?",
+   "options": [
+    "\\(u_5^2=u_4\\cdot u_6\\)",
+    "\\(u_5=u_4+u_6\\)",
+    "\\(2u_5=u_4+u_6\\)",
+    "\\(u_6=u_4+u_5\\)"
+   ],
+   "answer": 2,
+   "explain": "Trong cấp số cộng, mỗi số hạng ở giữa bằng trung bình cộng của hai số hạng liền kề: \\(u_5=\\dfrac{u_4+u_6}{2}\\)."
+  }
+ ],
+ "outro": {
+  "sequence": "2\\quad\\longrightarrow\\quad4\\quad\\longrightarrow\\quad8",
+  "question": "Đây không phải cấp số cộng. Vậy các số hạng được tạo ra theo quy luật nào?",
+  "title": "BÀI MỚI: CẤP SỐ NHÂN"
+ }
+}

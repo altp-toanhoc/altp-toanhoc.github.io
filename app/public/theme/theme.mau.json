@@ -1,0 +1,37 @@
+{
+ "images": {
+  "logo": "logo.png",
+  "background": "nen.jpg",
+  "question": { "file": "khung_cau_hoi.png", "edge": 80, "edgeWidth": 1.5 },
+  "answer": { "file": "khung_dap_an.png", "edge": 60, "edgeWidth": 1.2 },
+  "answerChosen": { "file": "khung_dap_an_dang_chon.png", "edge": 60, "edgeWidth": 1.2 },
+  "answerCorrect": { "file": "khung_dap_an_dung.png", "edge": 60, "edgeWidth": 1.2 },
+  "answerWrong": { "file": "khung_dap_an_sai.png", "edge": 60, "edgeWidth": 1.2 },
+  "ladder": { "file": "bac.png", "edge": 30, "edgeWidth": 1 },
+  "ladderNow": { "file": "bac_dang_choi.png", "edge": 30, "edgeWidth": 1 },
+  "fifty": "nut_50_50.png",
+  "advisor": "nut_to_tu_van.png"
+ },
+ "sounds": {
+  "start": "bat_dau.mp3",
+  "countdown": "nhac_nen.mp3",
+  "drumroll": "trong_don.mp3",
+  "tick": "tich_tac.mp3",
+  "pause": "tam_dung.mp3",
+  "timeUp": "het_gio.mp3",
+  "fifty": "50_50.mp3",
+  "advisor": "to_tu_van.mp3",
+  "correct": "dap_an_dung.mp3",
+  "final": "vinh_danh.mp3"
+ },
+ "colors": {
+  "text": "#ffffff",
+  "muted": "#c7d2fe",
+  "accent": "#ffcc33",
+  "highlight": "#ffa31a",
+  "correct": "#22c55e",
+  "wrong": "#ef4444",
+  "line": "#8fb8ff"
+ },
+ "font": "chu.woff2"
+}

@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+# Built by tool/build.sh (CI builds them on every push)
+app/public/build/
+app/public/vendor/
+# Images downloaded for reference, not used by the app
+app/theme_chua_dung/
