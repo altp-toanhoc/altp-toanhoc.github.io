@@ -15,6 +15,9 @@ jobs:
         with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
       - run: npm ci && npm run build && node --test test/logic.test.mjs test/theme.test.mjs
         working-directory: app
+      # GitHub Pages lets browsers keep files for 10 minutes; a new query string makes them fetch the new bundles.
+      - run: sed -i "s#build/\(host\|play\)\.js#&?v=${GITHUB_SHA::8}#" public/host.html public/play.html
+        working-directory: app
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: app/public }
