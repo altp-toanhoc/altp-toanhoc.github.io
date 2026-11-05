@@ -2,7 +2,7 @@
 // the player's locked answer and the key.
 import { browserSessionPersistence, ref, set, get, onValue, onDisconnect, serverTimestamp } from '../vendor/vendor.js';
 import { connect, serverClock, $, setRich, esc, show, watchConnection, keepAwake, signIn, retry } from './common.js';
-import { LETTERS, PHASE, percentages, remainingMs, money, TOP_PRIZE } from './logic.js';
+import { LETTERS, PHASE, percentages, remainingMs, money, TOP_PRIZE, secs } from './logic.js';
 import { applyTheme } from './theme.js';
 
 const { auth, db } = connect('play', browserSessionPersistence);
@@ -248,13 +248,17 @@ function renderEnd() {
     $('#endTitle').textContent = outro.title;
     return;
   }
+  const rows = finalData.ranking || [];
+  const mine = rows.find((r) => r.uid === auth.currentUser?.uid);
   $('#myScore').textContent = 'CHÚC MỪNG!';
-  $('#endTitle').innerHTML = `Bạn đã trở thành<br>Triệu phú Toán học<br><span class="prize">${money(TOP_PRIZE)}đ</span>`;
+  $('#endTitle').innerHTML = `Bạn đã trở thành<br>Triệu phú Toán học<br><span class="prize">${money(TOP_PRIZE)}đ</span>`
+    + (mine ? `<span class="my-rank">Hạng <b>${mine.rank}</b>/${rows.length} · ${mine.correct}/${finalData.total} câu đúng · ${secs(mine.ms)}</span>` : '');
   box.innerHTML = '';
-  (finalData.rows || []).forEach((r, i) => {
+  box.classList.add('rank');
+  rows.slice(0, 5).forEach((r) => {
     const li = document.createElement('li');
-    li.innerHTML = `<span>Câu ${i + 1} · Đáp án ${LETTERS[r.key]}:</span><span class="t"></span>`;
-    setRich(li.querySelector('.t'), r.text || '');
+    li.classList.toggle('me', r === mine);
+    li.innerHTML = `<b class="r">${r.rank}</b><span class="nm">${esc(r.name)}</span><span class="t">${r.correct} đúng · ${secs(r.ms).replace(' giây', 's')}</span>`;
     box.append(li);
   });
 }

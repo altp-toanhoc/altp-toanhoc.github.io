@@ -431,7 +431,36 @@ body.play > *:not(.stage-bg) { position: relative; z-index: 1; }
 .ladder li.past .dot { opacity: 0.6; }
 /* Màn chúc mừng */
 .prize { display: inline-block; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(255, 167, 38, 0.5); }
-#final .stats .prize { font-size: 2.6em; letter-spacing: 0.04em; }
+#final .stats .prize { font-size: 2em; letter-spacing: 0.04em; }
 .phone #endTitle .prize { font-size: 1.5em; margin-top: 0.3em; }
 @media (prefers-reduced-motion: reduce) { .ans.correct::before, .host .ans.pick::before { animation: none !important; } }
 .ans.removed .fill { display: none; }
+/* Bảng xếp hạng cuối ván: hạng · tên · số câu đúng · tổng thời gian; hạng 1 nổi bật màu cam */
+.board.rank li { gap: 0.8em; }
+.board.rank li .r { flex: none; width: 1.9em; height: 1.9em; display: grid; place-items: center; border-radius: 50%; background: var(--gold); color: #2a1300; font-weight: 900; }
+.board.rank li .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board.rank li .t { margin-left: auto; flex: none; color: var(--muted); font-weight: 700; font-size: 0.85em; }
+.board.summary.rank li:first-child { background: linear-gradient(180deg, #ffc35c, var(--amber) 50%, var(--amber-2)); color: #111; border-color: #ffe0a8; }
+.board.summary.rank li:first-child .t { color: #2a1300; }
+.board.summary.rank li:first-child .r { background: #fff; }
+.board.rank li.me { border-color: var(--gold); box-shadow: 0 0 14px rgba(255, 167, 38, 0.6); }
+.board.rank li.empty { justify-content: center; }
+.host .board.summary.rank { grid-template-columns: 1fr 1fr; width: min(1300px, 90vw); gap: 0.45em 1em; }
+.host .board.summary.rank li { font-size: 1.15em; padding: 0.4em 1em; }
+.host .board.summary.rank li:first-child { grid-column: 1 / -1; font-size: 1.35em; }
+#final .stats .more { display: block; font-size: 0.8em; color: var(--muted); margin-top: 0.2em; }
+.my-rank { display: block; font-size: 0.7em; font-weight: 700; color: var(--ice); margin-top: 0.6em; }
+.my-rank b { color: var(--gold); font-size: 1.3em; }
+/* Màn xếp hạng gọn hơn để 10 bạn đứng đầu vừa một màn hình máy chiếu, tên không bị cắt trên điện thoại */
+#final .final-wrap:has(.board.rank:not([hidden])) { gap: 0.3em; justify-content: flex-start; padding-top: 0.5em; }
+#final .final-wrap:has(.board.rank:not([hidden])) .trophy { width: 3em; height: 3em; }
+#final .final-wrap:has(.board.rank:not([hidden])) .final-title { font-size: 2.5em; }
+#final .final-wrap:has(.board.rank:not([hidden])) .stats { margin-bottom: 0.3em; }
+#final .stats .prize { font-size: 1.6em; }
+.host .board.summary.rank li { font-size: 1.05em; padding: 0.3em 0.9em; }
+.host .board.summary.rank li:first-child { font-size: 1.2em; }
+.board.rank li .r { width: 1.6em; height: 1.6em; }
+.phone .board.rank li { font-size: 0.95em; padding: 0.45em 0.7em; gap: 0.55em; }
+.phone .board.rank li .t { font-size: 0.8em; }
+.phone .board.rank li .nm { flex: 1; }
+.phone .my-rank { font-size: 0.62em; }

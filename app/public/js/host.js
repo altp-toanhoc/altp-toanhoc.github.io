@@ -7,7 +7,7 @@ import {
 } from '../vendor/vendor.js';
 import { connect, serverClock, $, setRich, esc, show, IS_LOCAL, watchConnection, keepAwake, signIn, retry } from './common.js';
 import {
-  LETTERS, PHASE, countAnswers, percentages, pickFifty, remainingMs, newRoomCode, validateBank, prizes, money, TOP_PRIZE,
+  LETTERS, PHASE, countAnswers, percentages, pickFifty, remainingMs, newRoomCode, validateBank, prizes, money, TOP_PRIZE, ranking, secs,
 } from './logic.js';
 import { sfx, toggle as toggleSound, isOn as soundOn, useSoundFiles, countdown, setUrgent } from './sound.js';
 // The one question set of the game (official, verbatim from the author's document); bundled into the page.
@@ -249,9 +249,13 @@ function advisor() {
 async function finish() {
   const total = bank.questions.length;
   sfx.final();
+  // Class ranking from every vote (server times), read once at the end.
+  const [all, opened] = await Promise.all([retry(() => get(roomRef('answers'))), retry(() => get(roomRef('questions')))]);
+  const qs = bank.questions.map((q, i) => ({ answer: q.answer, openedAt: opened.val()?.[i]?.openedAt || 0 }));
+  const rank = ranking(players, all.val() || {}, qs).map(({ uid, name, correct, ms, rank: r }) => ({ uid, name, correct, ms, rank: r }));
   await update(roomRef(), {
     keys: { ...bank.questions.map((q) => q.answer) },
-    final: { rows: bank.questions.map((q) => ({ key: q.answer, text: q.options[q.answer] })), total },
+    final: { ranking: rank, total },
     outro: bank.outro || null,
     state: { phase: PHASE.END, q: total - 1, outro: -1 }, // -1: the congratulations screen, then the lead-in (0, 1)
   });
@@ -459,13 +463,16 @@ function renderFinal() {
   $('#finalTitle').textContent = 'TRIỆU PHÚ TOÁN HỌC';
   $('#finalStats').innerHTML = `<span class="prize">${money(TOP_PRIZE)}đ</span>`;
   box.innerHTML = '';
-  (finalData.rows || []).forEach((r, i) => {
+  box.classList.add('rank');
+  const rows = finalData.ranking || [];
+  if (!rows.length) box.innerHTML = '<li class="empty">Chưa có học sinh nào trả lời</li>';
+  rows.slice(0, 10).forEach((r, i) => {
     const li = document.createElement('li');
-    li.style.animationDelay = `${i * 0.12}s`;
-    li.innerHTML = `<span>Câu ${i + 1} · Đáp án ${LETTERS[r.key]}:</span><span class="t"></span>`;
-    setRich(li.querySelector('.t'), r.text || '');
+    li.style.animationDelay = `${(9 - Math.min(i, 9)) * 0.15}s`; // the top of the board appears last
+    li.innerHTML = `<b class="r">${r.rank}</b><span class="nm">${esc(r.name)}</span><span class="t">${r.correct}/${finalData.total} câu · ${secs(r.ms)}</span>`;
     box.append(li);
   });
+  if (rows.length > 10) $('#finalStats').innerHTML += `<span class="more">${rows.length} học sinh · 10 bạn đứng đầu</span>`;
 }
 
 // ---------- wiring ----------

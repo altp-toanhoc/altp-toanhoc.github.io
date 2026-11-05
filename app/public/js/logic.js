@@ -104,3 +104,29 @@ export function prizes(n) {
 }
 // 1000000 -> "1.000.000"
 export const money = (v) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+// Class ranking at the end: most correct answers first, then the least total time on those correct answers
+// (time = moment of the student's last choice − the moment the question opened, both server clock).
+// players: {uid: {name}}, answers: {q: {uid: {choice, at}}}, questions: [{answer, openedAt}].
+// Returns [{uid, name, correct, ms, rank}], equal score and time share a rank.
+export function ranking(players, answers, questions) {
+  const rows = Object.entries(players || {}).map(([uid, p]) => {
+    let correct = 0;
+    let ms = 0;
+    questions.forEach((q, i) => {
+      const a = answers?.[i]?.[uid];
+      if (!a || a.choice !== q.answer) return;
+      correct++;
+      ms += Math.max(0, (a.at || 0) - (q.openedAt || 0));
+    });
+    return { uid, name: String(p?.name || '?'), correct, ms };
+  });
+  rows.sort((a, b) => b.correct - a.correct || a.ms - b.ms || a.name.localeCompare(b.name, 'vi'));
+  rows.forEach((r, i) => {
+    const prev = rows[i - 1];
+    r.rank = prev && prev.correct === r.correct && prev.ms === r.ms ? prev.rank : i + 1;
+  });
+  return rows;
+}
+// 41234 -> "41,2 giây"
+export const secs = (ms) => `${(ms / 1000).toFixed(1).replace('.', ',')} giây`;

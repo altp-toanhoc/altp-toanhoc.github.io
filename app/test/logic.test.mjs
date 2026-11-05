@@ -71,3 +71,18 @@ test('prize ladder: 50.000 up to 1.000.000, always rising', async () => {
   assert.equal(money(1_000_000), '1.000.000');
   assert.equal(money(50_000), '50.000');
 });
+
+test('ranking: correct answers first, then the faster total time', async () => {
+  const { ranking, secs } = await import('../public/js/logic.js');
+  const players = { a: { name: 'An' }, b: { name: 'Bình' }, c: { name: 'Châu' }, d: { name: 'Dũng' } };
+  const questions = [{ answer: 2, openedAt: 1000 }, { answer: 0, openedAt: 50_000 }];
+  const answers = {
+    0: { a: { choice: 2, at: 6000 }, b: { choice: 2, at: 3000 }, c: { choice: 1, at: 2000 }, d: { choice: 2, at: 6000 } },
+    1: { a: { choice: 0, at: 52_000 }, b: { choice: 3, at: 51_000 }, d: { choice: 0, at: 52_000 } },
+  };
+  const r = ranking(players, answers, questions);
+  assert.deepEqual(r.map((x) => [x.name, x.correct, x.ms, x.rank]), [
+    ['An', 2, 7000, 1], ['Dũng', 2, 7000, 1], ['Bình', 1, 2000, 3], ['Châu', 0, 0, 4],
+  ]);
+  assert.equal(secs(41_234), '41,2 giây');
+});

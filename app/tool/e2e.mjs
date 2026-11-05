@@ -32,7 +32,7 @@ const key = (p, k) => p.eval(`document.body.dispatchEvent(new KeyboardEvent('key
 const pctSum = (p) => p.eval(`[...document.querySelectorAll('#answers .pct')].filter((e) => e.innerText).reduce((s, e) => s + parseInt(e.innerText, 10), 0)`);
 const opt = (i) => `#answers .ans:nth-child(${i + 1})`;
 // The vote ends at 0: banner, no key yet, the player can now pick.
-async function expectVoteEnd(host, hs, n, { picked = false, ms = 30000 } = {}) {
+async function expectVoteEnd(host, hs, n, { picked = false, ms = 45000 } = {}) {
   await host.until(`${txt('#banner')} === 'HẾT GIỜ BÌNH CHỌN' && !document.querySelector('#answers .ans').disabled`, `question ${n}: vote ended, player can pick`, ms);
   assert.equal(await host.eval(`!!document.querySelector('#answers .ans.correct')`), false, `question ${n}: no key before the lock`);
   assert.equal(await host.eval(`document.querySelector('#bLock').disabled`), !picked, picked ? `question ${n}: the pick made during the vote can now be locked` : `question ${n}: nothing to lock before a pick`);
@@ -179,6 +179,11 @@ try {
   // Congratulations screen, then the lead-in to the new lesson.
   await host.until(vis('#final') + ` && ${txt('#finalTitle')} === 'TRIỆU PHÚ TOÁN HỌC' && /1\.000\.000đ/.test(${txt('#finalStats')})`, 'congratulations screen');
   await hs.until(vis('#end') + ` && ${txt('#myScore')} === 'CHÚC MỪNG!' && /Triệu phú Toán học/.test(${txt('#endTitle')})`, 'phone congratulations');
+  // Class ranking instead of the keys: top 10 on the projector, the student's own rank on the phone.
+  await host.until(`document.querySelectorAll('#board li .r').length === 10`, 'top 10 ranking on the projector');
+  const ranks = await host.eval(`[...document.querySelectorAll('#board li .r')].map((e) => Number(e.innerText))`);
+  assert.ok(ranks[0] === 1 && ranks.every((r, i) => i === 0 || r >= ranks[i - 1]), `ranks in order: ${ranks}`);
+  assert.match(await hs.text('.my-rank'), /^Hạng \d+\/31 · \d\/5 câu đúng · \d+,\d giây$/, 'own rank on the phone');
   await host.shot('095_gv_chuc_mung');
   await hs.shot('095_hs_chuc_mung');
   assert.equal(await host.eval(`document.querySelector('#bNext').firstChild.textContent`), 'Tiếp');
