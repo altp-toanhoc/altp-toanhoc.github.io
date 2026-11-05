@@ -81,3 +81,26 @@ export function validateBank(bank) {
   if (bank.outro != null && (typeof bank.outro !== 'object' || !bank.outro.title)) errs.push('Màn bài mới (outro) cần có title.');
   return errs;
 }
+
+// Prize money for each step of the ladder (in đồng): from 50.000 up to 1.000.000 at the last question, rising
+// like the show's money tree through round amounts. 5 questions: 50.000 · 100.000 · 200.000 · 500.000 · 1.000.000.
+export const TOP_PRIZE = 1_000_000;
+const ROUND = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900].map((k) => k * 1000);
+export function prizes(n) {
+  if (n <= 0) return [];
+  const ratio = (TOP_PRIZE / ROUND[0]) ** (1 / Math.max(1, n - 1));
+  const out = [];
+  for (let i = 0; i < n - 1; i++) {
+    const target = ROUND[0] * ratio ** i;
+    const prev = out.length ? out[out.length - 1] : 0;
+    // the round amount nearest the curve, above the previous step; past the list, steps of 10.000
+    const ok = ROUND.filter((v) => v > prev && ROUND.length - ROUND.indexOf(v) >= n - 1 - i);
+    const v = ok.length ? ok.reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a))
+      : Math.max(prev + 10_000, Math.round(target / 10_000) * 10_000);
+    out.push(v);
+  }
+  out.push(TOP_PRIZE);
+  return out;
+}
+// 1000000 -> "1.000.000"
+export const money = (v) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.');

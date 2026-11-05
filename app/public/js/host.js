@@ -7,7 +7,7 @@ import {
 } from '../vendor/vendor.js';
 import { connect, serverClock, $, setRich, esc, show, IS_LOCAL, watchConnection, keepAwake, signIn, retry } from './common.js';
 import {
-  LETTERS, PHASE, countAnswers, percentages, pickFifty, remainingMs, newRoomCode, validateBank,
+  LETTERS, PHASE, countAnswers, percentages, pickFifty, remainingMs, newRoomCode, validateBank, prizes, money, TOP_PRIZE,
 } from './logic.js';
 import { sfx, toggle as toggleSound, isOn as soundOn, useSoundFiles, countdown, setUrgent } from './sound.js';
 // The one question set of the game (official, verbatim from the author's document); bundled into the page.
@@ -253,12 +253,13 @@ async function finish() {
     keys: { ...bank.questions.map((q) => q.answer) },
     final: { rows: bank.questions.map((q) => ({ key: q.answer, text: q.options[q.answer] })), total },
     outro: bank.outro || null,
-    state: { phase: PHASE.END, q: total - 1, outro: bank.outro ? 0 : null },
+    state: { phase: PHASE.END, q: total - 1, outro: -1 }, // -1: the congratulations screen, then the lead-in (0, 1)
   });
 }
 
 function next() {
   if (phaseIn(PHASE.LOBBY)) return startQuestion(0);
+  if (phaseIn(PHASE.END) && state.outro === -1 && bank.outro) return update(roomRef('state'), { outro: 0 });
   if (phaseIn(PHASE.END) && state.outro === 0) return update(roomRef('state'), { outro: 1 });
   if (!phaseIn(PHASE.CLOSED) || !published.has(state.q)) return null;
   return state.q + 1 < bank.questions.length ? startQuestion(state.q + 1) : finish();
@@ -339,7 +340,8 @@ function renderQuestion() {
     requestAnimationFrame(fitQuestion);
     document.fonts?.ready.then(() => requestAnimationFrame(fitQuestion));
     setTimeout(fitQuestion, 400);
-    $('#ladder').innerHTML = bank.questions.map((x, i) => `<li><span class="n">${i + 1}</span>Câu ${i + 1}</li>`).join('');
+    const pz = prizes(bank.questions.length);
+    $('#ladder').innerHTML = pz.map((v, i) => `<li><span class="n">${i + 1}</span><span class="dot">◆</span>${money(v)}</li>`).join('');
   }
   const removed = state.removed || null;
   const revealed = phaseIn(PHASE.CLOSED) && published.has(state.q);
@@ -421,19 +423,19 @@ function renderControls() {
   lk.disabled = !(phaseIn(PHASE.DECIDE) && Number.isInteger(state?.pick));
   lk.classList.toggle('primary', !lk.disabled);
   const n = $('#bNext');
-  const lead = phaseIn(PHASE.END) && state.outro === 0;
+  const lead = phaseIn(PHASE.END) && (state.outro === 0 || (state.outro === -1 && !!bank?.outro));
   show(n, !phaseIn(PHASE.END) || lead);
   document.querySelectorAll('.controls .sep').forEach((x) => show(x, !phaseIn(PHASE.END)));
   n.disabled = !(phaseIn(PHASE.LOBBY) || lead || (phaseIn(PHASE.CLOSED) && published.has(state.q)));
   const last = bank && state && state.q + 1 >= bank.questions.length;
-  n.firstChild.textContent = phaseIn(PHASE.LOBBY) ? 'Bắt đầu' : lead ? 'Bài mới' : last ? (bank.outro ? 'Tiếp' : 'Kết thúc') : 'Câu tiếp';
+  n.firstChild.textContent = phaseIn(PHASE.LOBBY) ? 'Bắt đầu' : lead ? (state.outro === 0 ? 'Bài mới' : 'Tiếp') : last ? 'Kết thúc' : 'Câu tiếp';
   $('#soundBtn').innerHTML = soundOn() ? ICON_SOUND_ON : ICON_SOUND_OFF;
   countdown(phaseIn(PHASE.OPEN));
 }
 
 function renderFinal() {
   if (!finalData) return;
-  const o = Number.isInteger(state?.outro) ? bank?.outro : null;
+  const o = Number.isInteger(state?.outro) && state.outro >= 0 ? bank?.outro : null;
   const box = $('#board');
   show($('#outroSeq'), !!o && state.outro === 0);
   show(box, !o);
@@ -453,9 +455,9 @@ function renderFinal() {
     $('#finalStats').textContent = '';
     return;
   }
-  $('#finalSmall').textContent = 'AI LÀ TRIỆU PHÚ TOÁN HỌC';
-  $('#finalTitle').textContent = 'KẾT THÚC';
-  $('#finalStats').textContent = 'Cảm ơn các bạn đã tham gia!';
+  $('#finalSmall').textContent = 'CHÚC MỪNG BẠN ĐÃ TRỞ THÀNH';
+  $('#finalTitle').textContent = 'TRIỆU PHÚ TOÁN HỌC';
+  $('#finalStats').innerHTML = `<span class="prize">${money(TOP_PRIZE)}đ</span>`;
   box.innerHTML = '';
   (finalData.rows || []).forEach((r, i) => {
     const li = document.createElement('li');

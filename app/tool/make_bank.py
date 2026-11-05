@@ -13,7 +13,7 @@ for i in range(1, len(parts), 2):
     key = re.search(r'\*\*Đáp án đúng: ([ABCD])\.\*\*', body).group(1)
     exp = re.search(r'\*\*Giải thích sau khi công bố:\*\* (.+)$', body, re.M).group(1).strip()
     note = re.search(r'^\*([^*].*?)\*$', body, re.M)
-    q = {'seconds': 20, 'text': text, 'options': [o[1].strip() for o in opts], 'answer': 'ABCD'.index(key), 'explain': exp}
+    q = {'seconds': 30, 'text': text, 'options': [o[1].strip() for o in opts], 'answer': 'ABCD'.index(key), 'explain': exp}
     if note: q['note'] = note.group(1).strip()
     qs.append(q)
 outro = {

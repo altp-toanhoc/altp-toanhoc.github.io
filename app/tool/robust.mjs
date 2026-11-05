@@ -137,7 +137,7 @@ try {
 
   await host.click('#bNext');
   await host.until(`${vis('#final')}`, 'final');
-  await s3.until(`${vis('#end')} && ${txt('#myScore')} === 'KẾT THÚC'`, 'closing screen on a late student\'s phone');
+  await s3.until(`${vis('#end')} && ${txt('#myScore')} === 'CHÚC MỪNG!'`, 'closing screen on a late student\'s phone');
   await s2.until(vis('#end'), 's2 end');
   ok('cuối buổi: điện thoại học sinh vào muộn hiện màn kết thúc');
   await shot(host, '05_gv_vinh_danh');

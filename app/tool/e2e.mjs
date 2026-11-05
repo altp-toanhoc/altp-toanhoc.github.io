@@ -174,6 +174,13 @@ try {
   await hs.shot('09_hs_cau5_ket_qua');
 
   // Lead-in to the new lesson: 2 → 4 → 8 with the open question, then the title.
+  assert.equal(await host.eval(`document.querySelector('#bNext').firstChild.textContent`), 'Kết thúc');
+  await host.click('#bNext');
+  // Congratulations screen, then the lead-in to the new lesson.
+  await host.until(vis('#final') + ` && ${txt('#finalTitle')} === 'TRIỆU PHÚ TOÁN HỌC' && /1\.000\.000đ/.test(${txt('#finalStats')})`, 'congratulations screen');
+  await hs.until(vis('#end') + ` && ${txt('#myScore')} === 'CHÚC MỪNG!' && /Triệu phú Toán học/.test(${txt('#endTitle')})`, 'phone congratulations');
+  await host.shot('095_gv_chuc_mung');
+  await hs.shot('095_hs_chuc_mung');
   assert.equal(await host.eval(`document.querySelector('#bNext').firstChild.textContent`), 'Tiếp');
   await host.click('#bNext');
   await host.until(vis('#final') + ` && !document.querySelector('#outroSeq').hidden && /quy luật nào/.test(${txt('#finalStats')})`, 'open-question screen');

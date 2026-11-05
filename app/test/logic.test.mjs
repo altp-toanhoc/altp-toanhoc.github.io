@@ -52,9 +52,22 @@ test('the official question set is valid, has 5 questions in order with keys C, 
   const bank = JSON.parse(await readFile(new URL('../bo_cau/cap_so_cong.json', import.meta.url), 'utf8'));
   assert.deepEqual(validateBank(bank), []);
   assert.deepEqual(bank.questions.map((q) => 'ABCD'[q.answer]).join(''), 'CBDAC');
-  assert.ok(bank.questions.every((q) => q.explain && q.options.length === 4 && q.seconds === 20));
+  assert.ok(bank.questions.every((q) => q.explain && q.options.length === 4 && q.seconds === 30));
   assert.equal(bank.questions[0].options[2], '\\(8;\\ 5;\\ 2;\\ -1;\\ -4\\)');
   assert.equal(bank.outro.title, 'BÀI MỚI: CẤP SỐ NHÂN');
 });
 
 
+
+test('prize ladder: 50.000 up to 1.000.000, always rising', async () => {
+  const { prizes, money } = await import('../public/js/logic.js');
+  assert.deepEqual(prizes(5), [50_000, 100_000, 200_000, 500_000, 1_000_000]);
+  for (let n = 1; n <= 15; n++) {
+    const p = prizes(n);
+    assert.equal(p.length, n);
+    assert.equal(p[n - 1], 1_000_000);
+    for (let i = 1; i < n; i++) assert.ok(p[i] > p[i - 1], `n=${n}: ${p}`);
+  }
+  assert.equal(money(1_000_000), '1.000.000');
+  assert.equal(money(50_000), '50.000');
+});

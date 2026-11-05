@@ -2,7 +2,7 @@
 // the player's locked answer and the key.
 import { browserSessionPersistence, ref, set, get, onValue, onDisconnect, serverTimestamp } from '../vendor/vendor.js';
 import { connect, serverClock, $, setRich, esc, show, watchConnection, keepAwake, signIn, retry } from './common.js';
-import { LETTERS, PHASE, percentages, remainingMs } from './logic.js';
+import { LETTERS, PHASE, percentages, remainingMs, money, TOP_PRIZE } from './logic.js';
 import { applyTheme } from './theme.js';
 
 const { auth, db } = connect('play', browserSessionPersistence);
@@ -234,7 +234,7 @@ function renderEnd() {
   if (!finalData) return;
   const step = state?.outro;
   const box = $('#board');
-  const lead = outro && Number.isInteger(step);
+  const lead = !!outro && Number.isInteger(step) && step >= 0;
   show($('#outroSeq'), lead && step === 0);
   show(box, !lead);
   if (lead && step === 0) {
@@ -248,8 +248,8 @@ function renderEnd() {
     $('#endTitle').textContent = outro.title;
     return;
   }
-  $('#myScore').textContent = 'KẾT THÚC';
-  $('#endTitle').textContent = 'Cảm ơn bạn đã tham gia!';
+  $('#myScore').textContent = 'CHÚC MỪNG!';
+  $('#endTitle').innerHTML = `Bạn đã trở thành<br>Triệu phú Toán học<br><span class="prize">${money(TOP_PRIZE)}đ</span>`;
   box.innerHTML = '';
   (finalData.rows || []).forEach((r, i) => {
     const li = document.createElement('li');
